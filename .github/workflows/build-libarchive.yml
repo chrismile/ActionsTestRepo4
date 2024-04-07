@@ -23,6 +23,7 @@ jobs:
       VCPKG_ROOT: ${{ github.workspace }}/vcpkg
       VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg/bincache
 
+    steps:
     - uses: actions/checkout@v2
 
     - uses: lukka/get-cmake@latest
