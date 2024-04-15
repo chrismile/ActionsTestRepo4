@@ -33,11 +33,11 @@ jobs:
     - name: Setup vcpkg
       uses: lukka/run-vcpkg@v11
       with:
-        vcpkgGitURL: 'https://github.com/chrismile/vcpkg.git'
-        vcpkgGitCommitId: '3a0b82e69003f3839e9eef842a64354492a2babe'
+        vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
+        vcpkgGitCommitId: 'ad3bae57455a3c3ce528fcd47d8e8027d0498add'
         doNotCacheOnWorkflowFailure: true
 
     - name: Configure CMake
       shell: bash
       run: |
-        cmake -B "${{github.workspace}}/build" -DCMAKE_TOOLCHAIN_FILE="${{env.VCPKG_ROOT}}/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake -B "${{github.workspace}}/build" -DCMAKE_TOOLCHAIN_FILE="${{env.VCPKG_ROOT}}/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} --cmake-args=-DVCPKG_CMAKE_CONFIGURE_OPTIONS=--trace-expand
