@@ -33,8 +33,8 @@ jobs:
     - name: Setup vcpkg
       uses: lukka/run-vcpkg@v11
       with:
-        vcpkgGitURL: 'https://github.com/microsoft/vcpkg.git'
-        vcpkgGitCommitId: 'ad3bae57455a3c3ce528fcd47d8e8027d0498add'
+        vcpkgGitURL: 'https://github.com/cenit/vcpkg.git'
+        vcpkgGitCommitId: 'b29970498be74beaf4571fb715332900f782abeb'
         doNotCacheOnWorkflowFailure: true
 
     - name: Configure CMake
