@@ -1,0 +1,22 @@
+name: Handle Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+
+    runs-on: ${{ matrix.os }}
+    name: "Create release-artifacts"
+
+    steps:
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-test
+        path: dist/
