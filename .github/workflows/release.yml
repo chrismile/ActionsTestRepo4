@@ -16,17 +16,37 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     runs-on: ${{ matrix.os }}
     name: "Create release-artifacts"
 
-    steps:
-    - uses: actions/checkout@v2
+    env:
+      artifact_name: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}-${{ matrix.os }}
 
-    - name: Create release
-      uses: softprops/action-gh-release@v2
-      #if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: 'dist/*'
-        make_latest: true
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Copy files
+        shell: bash
+        run: |
+          mv dist ${{ env.artifact_name }}
+
+      - name: Create archive (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          zip -r ${{ env.artifact_name }}.zip ${{ env.artifact_name }}
+
+      - name: Create archive (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          Compress-Archive -Path ${{ env.artifact_name }} -Destination ${{ env.artifact_name }}.zip
+
+      # Needs "Read and write permission" under "Workflow permissions" on https://github.com/chrismile/naga_cross/settings/actions.
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        #if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ${{ env.artifact_name }}.zip
