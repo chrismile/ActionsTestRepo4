@@ -32,17 +32,14 @@ jobs:
         run: |
           mv dist ${{ env.artifact_name }}
 
-      - name: Create archive (Unix)
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          zip -r ${{ env.artifact_name }}.zip ${{ env.artifact_name }}
-
-      - name: Create archive (Windows)
-        if: runner.os == 'Windows'
-        shell: powershell
-        run: |
-          Compress-Archive -Path ${{ env.artifact_name }} -Destination ${{ env.artifact_name }}.zip
+      #- name: Create archive (Unix)
+      #  shell: bash
+      #  run: |
+      #    zip -r ${{ env.artifact_name }}.zip ${{ env.artifact_name }}
+      - uses: vimtor/action-zip@v1.2
+        with:
+          files: ${{ env.artifact_name }}/
+          dest: ${{ env.artifact_name }}.zip
 
       # Needs "Read and write permission" under "Workflow permissions" on https://github.com/chrismile/naga_cross/settings/actions.
       - name: Create release
