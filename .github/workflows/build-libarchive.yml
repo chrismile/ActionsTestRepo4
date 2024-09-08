@@ -26,22 +26,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: lukka/get-cmake@latest
-      with:
-        cmakeVersion: 3.29.0
-
-    - name: Setup vcpkg
-      uses: lukka/run-vcpkg@v11
-      with:
-        vcpkgGitURL: 'https://github.com/cenit/vcpkg.git'
-        vcpkgGitCommitId: 'b29970498be74beaf4571fb715332900f782abeb'
-        doNotCacheOnWorkflowFailure: true
-
-    - name: Configure CMake
-      shell: bash
-      run: |
-        cmake -B "${{github.workspace}}/build" -DCMAKE_TOOLCHAIN_FILE="${{env.VCPKG_ROOT}}/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
