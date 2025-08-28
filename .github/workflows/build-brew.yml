@@ -20,22 +20,18 @@ jobs:
     name: "${{ github.workflow }}: ${{ matrix.os }}"
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-
       - name: Install Dependencies via Homebrew
         shell: bash
         run: |
           export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
           brew update
-          brew install --force --overwrite llvm libomp pkg-config make cmake zlib
+          brew install --force --overwrite llvm pkg-config make cmake
 
       - name: Configure CMake
         shell: bash
         run: |
           params=()
-          params+=(-DCMAKE_FIND_USE_CMAKE_SYSTEM_PATH=False -DCMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH=False -DCMAKE_FIND_FRAMEWORK=Last -DCMAKE_FIND_APPBUNDLE=Never -DZLIB_ROOT="$(brew --prefix)/opt/zlib")
+          params+=(-DCMAKE_FIND_USE_CMAKE_SYSTEM_PATH=False -DCMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH=False -DCMAKE_FIND_FRAMEWORK=Last -DCMAKE_FIND_APPBUNDLE=Never
           params+=(-DCMAKE_C_COMPILER="$(brew --prefix)/opt/llvm/bin/clang" -DCMAKE_CXX_COMPILER="$(brew --prefix)/opt/llvm/bin/clang++")
           params+=(-DCMAKE_LINKER="$(brew --prefix)/opt/llvm/bin/llvm-ld" -DCMAKE_AR="$(brew --prefix)/opt/llvm/bin/llvm-ar")
           cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_PREFIX_PATH="$(brew --prefix)" "${params[@]}"
