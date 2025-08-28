@@ -34,10 +34,11 @@ jobs:
         run: |
           brew config
 
-      - name: Homebrew Doctor
-        shell: bash
-        run: |
-          brew doctor
+      # Commented out due to return code.
+      #- name: Homebrew Doctor
+      #  shell: bash
+      #  run: |
+      #    brew doctor
 
       - name: Configure CMake
         shell: bash
