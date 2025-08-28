@@ -30,6 +30,7 @@ jobs:
           brew untap homebrew/core
           brew untap homebrew/cask
           brew uninstall openssl@1.1
+          brew cleanup
           brew install --force --overwrite llvm pkg-config make cmake
 
       - name: Homebrew Config
