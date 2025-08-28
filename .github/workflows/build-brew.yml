@@ -27,39 +27,17 @@ jobs:
       - name: Install Dependencies via Homebrew
         shell: bash
         run: |
-          # Normally, we would first install Homebrew here: apt install curl,
-          # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          # https://stackoverflow.com/questions/25128546/how-to-automate-homebrew-installation
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            if ! command -v brew &> /dev/null; then
-              sudo apt install curl build-essential gcc
-              /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-              echo '# Set PATH, MANPATH, etc., for Homebrew.' >> ~/.bash_profile
-              echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bash_profile
-              eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-            fi
-            brew install gcc
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-            brew update
-            brew install --force --overwrite llvm libomp pkg-config make
-          else
-            echo "$RUNNER_OS is not supported."
-            exit 1
-          fi
-          brew install cmake zlib
+          export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+          brew update
+          brew install --force --overwrite llvm libomp pkg-config make cmake zlib
 
       - name: Configure CMake
         shell: bash
         run: |
           params=()
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            params+=(-DCMAKE_FIND_USE_CMAKE_SYSTEM_PATH=False -DCMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH=False -DCMAKE_FIND_FRAMEWORK=Last -DCMAKE_FIND_APPBUNDLE=Never -DZLIB_ROOT="$(brew --prefix)/opt/zlib")
-            params+=(-DCMAKE_C_COMPILER="$(brew --prefix)/opt/llvm/bin/clang" -DCMAKE_CXX_COMPILER="$(brew --prefix)/opt/llvm/bin/clang++")
-            params+=(-DCMAKE_LINKER="$(brew --prefix)/opt/llvm/bin/llvm-ld" -DCMAKE_AR="$(brew --prefix)/opt/llvm/bin/llvm-ar")
-          fi
+          params+=(-DCMAKE_FIND_USE_CMAKE_SYSTEM_PATH=False -DCMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH=False -DCMAKE_FIND_FRAMEWORK=Last -DCMAKE_FIND_APPBUNDLE=Never -DZLIB_ROOT="$(brew --prefix)/opt/zlib")
+          params+=(-DCMAKE_C_COMPILER="$(brew --prefix)/opt/llvm/bin/clang" -DCMAKE_CXX_COMPILER="$(brew --prefix)/opt/llvm/bin/clang++")
+          params+=(-DCMAKE_LINKER="$(brew --prefix)/opt/llvm/bin/llvm-ld" -DCMAKE_AR="$(brew --prefix)/opt/llvm/bin/llvm-ar")
           cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_PREFIX_PATH="$(brew --prefix)" "${params[@]}"
 
       - name: Build
