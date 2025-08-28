@@ -29,7 +29,12 @@ jobs:
           brew update
           brew install --force --overwrite llvm pkg-config make cmake
 
-      - name: Homebrew Info
+      - name: Homebrew Config
+        shell: bash
+        run: |
+          brew config
+
+      - name: Homebrew Doctor
         shell: bash
         run: |
           brew doctor
