@@ -20,6 +20,8 @@ jobs:
     name: "${{ github.workflow }}: ${{ matrix.os }}"
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Install Dependencies via Homebrew
         shell: bash
         run: |
